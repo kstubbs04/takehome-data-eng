@@ -35,29 +35,30 @@ with DAG(
         """This is a function that will run within the DAG execution"""
         time.sleep(random_base)
 
-    t1 = PythonOperator(
+    # Create table to store raw data if it doesnt exists
+    create_staging_table = PostgresOperator(
+                                postgres_conn_id="postgres",
+                                task_id="create_raw_dataset",
+                                sql="""
+                                    CREATE TABLE IF NOT EXISTS raw_current_weather (
+                                        id serial NOT NULL PRIMARY KEY,
+                                        data json NOT NULL
+                                   );
+                                  """,
+                            )
+
+    fetch_weather_data = PythonOperator(
         task_id='ingest_api_data',
         python_callable=my_sleeping_function,
         op_kwargs={'random_base': 101.0 / 10},
     )
 
-    t2 = PostgresOperator(
-        postgres_conn_id="postgres",
-        task_id="create_raw_dataset",
-        sql="""
-            CREATE TABLE IF NOT EXISTS raw_current_weather (
-                id serial NOT NULL PRIMARY KEY,
-                data json NOT NULL
-           );
-          """,
-    )
-
     # @TODO: Fill in the below
-    t3 = PostgresOperator(
+    persist_raw_json = PostgresOperator(
         task_id="store_dataset",
         sql="""
-            INSERT INTO ...
+            INSERT INTO raw_current_weather
           """,
     )
 
-    t1 >> t2 >> t3
+    create_staging_table >> fetch_weather_data >> persist_raw_json
