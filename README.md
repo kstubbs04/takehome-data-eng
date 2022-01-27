@@ -91,7 +91,13 @@ Fork this repository and clone to your local environment
   - If you have any questions in any step, please reach out to your recruiter. A member of engineering team will be involved to support you, as if you were working for Bungalow.
 
 ## Your notes (Readme.md) 
-@TODO: Add any additional notes / documentation in this file.
+
+Assumptions:
+- Location data wont change often so storing this in a separate table with a foreign key to weather data should suffice
+- Lat, and Long are verified to be well formed prior to the api call
+- Metric units are used for storing all parameters
+- Postgres connection exists in airflow admin panel
+- 
 
 ### Time spent
 Give us a rough estimate of the time you spent working on this. If you spent time learning in order to do this project please feel free to let us know that too. This makes sure that we are evaluating your work fairly and in context. It also gives us the opportunity to learn and adjust our process if needed.
