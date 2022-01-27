@@ -41,11 +41,13 @@ with DAG(
         op_kwargs={'random_base': 101.0 / 10},
     )
 
-    # @TODO: Fill in the below
     t2 = PostgresOperator(
+        postgres_conn_id="postgres",
         task_id="create_raw_dataset",
         sql="""
             CREATE TABLE IF NOT EXISTS raw_current_weather (
+                id serial NOT NULL PRIMARY KEY,
+                data json NOT NULL
            );
           """,
     )
